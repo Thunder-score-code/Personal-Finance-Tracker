@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="Css/index.css">
+        <title>Personal Finance Tracker</title>
+    </head>
+    <body>
+        <nav>
+            <button id="dashboard-btn" class="nav-btn" data-section="dashboard">Dashboard</button>
+            <button id="transactions-btn" class="nav-btn" data-section="transactions">Transactions</button>
+            <button id="statistics-btn" class="nav-btn" data-section="statistics">Statistics</button>
+        </nav>
+        <div id="section">
+            <div class="dashboard">
+                <h1>Dashboard</h1>
+                <div id="summary">
+                    <div id="balance">
+                        <h2 id="total-balance">Total Balance: $0.00</h2>
+                        <h3 id="total-income">Total Income: $0.00</h3>
+                        <h3 id="total-expenses">Total Expenses: $0.00</h3>
+                    </div>
+                    <div id="recent-transactions">
+                        <h2>Recent Transactions</h2>
+                        <ul id="recent-transactions-list">
+                            <li>No recent transactions</li>
+                        </ul>
+                    </div>
+                </div>
+                <h2 class="h2-expense">Expenses by Category</h2>            
+                <div id="charts">
+                    <canvas id="pie-chart">
+                            
+                    </canvas>
+                </div> 
+            </div>
+        <div class="transaction-section">
+            <h1>Transactions</h1>
+            <h5 class="balance">Balance: $0.00</h5>
+            <div class="transactions">
+                <div id="add-transaction">
+                    <div id="add-income">
+                        <h2>Add Income</h2>
+                        <input id="income-amount" type="number" placeholder="Amount" max="10">
+                        <input id="income-description" type="text" placeholder="Description (optional)" maxlength="20">
+                        <select name="category" id="income-category">
+                            <option value="salary">Salary</option>
+                            <option value="business">Business</option>
+                            <option value="investment">Investment</option>
+                            <option value="gift">Gift</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <button id="income-button">Add</button>
+                    </div>
+                    <div id="add-expense">                 
+                        <h2>Add Expense</h2>
+                        <div id="expense-inputs">
+                            <input id="expense-amount" type="number" placeholder="Amount">
+                            <input id="expense-description" type="text" placeholder="Description (optional)" maxlength="20">
+                            <select name="category" id="expense-category">
+                                <option value="housing">Housing</option>
+                                <option value="food">Food</option>
+                                <option value="transportation">Transportation</option>
+                                <option value="entertainment">Entertainment</option>
+                                <option value="utilities">Utilities</option>
+                                <option value="insurance">Insurance</option>
+                                <option value="financial obligations">Financial Obligations</option>
+                                <option value="medical">Medical</option>
+                                <option value="business">Business</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <button id="expense-button">Add</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="transaction-history">
+                    <h2>Transaction History</h2>
+                    <select name="transaction-filter" id="transaction-filter">
+                        <option value="latest">Latest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="income">Income Only</option>
+                        <option value="expense">Expense Only</option>
+                        <option value="amount-asc">Amount: Ascending</option>
+                        <option value="amount-desc">Amount: Descending</option>
+                    </select>
+                    <ul id="transaction-list">
+                        <li id="no-transactions4">No transactions yet</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+            <div class="statistics">
+                <h1>Statistics</h1>
+                <div id="profit">
+                    <div>
+                        <h2>Daily Summary</h2>
+                        <h3 id="daily-earning">Earning: 0.00</h3>
+                        <h3 id="daily-spending">Spending: 0.00</h3>
+                        <h3 id="daily-net-profit">Net Profit: 0.00</h3>
+                    </div>
+                    <div>
+                        <h2>Weekly Summary</h2>
+                        <h3 id="weekly-earning">Earning: 0.00</h3>
+                        <h3 id="weekly-spending">Spending: 0.00</h3>
+                        <h3 id="weekly-net-profit">Net Profit: 0.00</h3>
+                    </div>
+                    <div>
+                        <h2>Monthly Summary</h2>
+                        <h3 id="monthly-earning">Earning: 0.00</h3>
+                        <h3 id="monthly-spending">Spending: 0.00</h3>
+                        <h3 id="monthly-net-profit">Net Profit: 0.00</h3>
+                    </div>
+                </div>
+                <div id="charts-statistics">
+                    <div id="income-vs-expenses">
+                        <h2>Income vs Expenses</h2>
+                        <canvas class="line-chart" id="line-chart">
+
+                        </canvas>
+                    </div>
+                    <div id="trends">
+                        <h2>Profit Trends</h2>
+                        <canvas class="line-chart" id="line-chart-trend">
+
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+        <script src="Js/index.js"></script>
+    </body>
+</html> 
