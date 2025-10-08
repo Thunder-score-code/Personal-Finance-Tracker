@@ -256,11 +256,10 @@ nav {
     font-size: 15px;
 }
 
-/* Normalize select sizing (was 100px) */
 select {
     font-size: 16px;
     line-height: 1.3;
-    padding: 8px;
+    padding: 6px;
 }
 
 #add-income input,
