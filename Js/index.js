@@ -261,8 +261,9 @@ function getTotalsByCategory() {
   businessTotal = 0;
   othersTotal = 0;
   transactions.forEach(transaction => {
-    amount = transaction.amount;
-    switch (transaction.category) {
+    if(transaction.type === "Expense") {
+      amount = transaction.amount;
+      switch (transaction.category) {
       case "housing":
         housingTotal += amount;
         break;
@@ -293,6 +294,7 @@ function getTotalsByCategory() {
       case "others":
         othersTotal += amount;
         break;
+    }
     }
   });
 }
