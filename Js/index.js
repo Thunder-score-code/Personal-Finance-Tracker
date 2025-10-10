@@ -1,3 +1,8 @@
+import { showSection, blockNonNumericInput } from './Exports/background-runners.js';
+import { createChart, createIncomeVsExpensesChart, incomeTrendChart } from './Exports/create-charts.js';
+
+
+
 const dashboardBtn = document.getElementById("dashboard-btn");
 const transactionsBtn = document.getElementById("transactions-btn");
 const statisticsBtn = document.getElementById("statistics-btn");
@@ -34,10 +39,6 @@ const monthlyEarnings = document.getElementById("monthly-earning");
 const monthlySpending = document.getElementById("monthly-spending");
 const monthlyNetProfit = document.getElementById("monthly-net-profit");
 
-let mychart = null;
-let chart = null;
-let trendChart = null
-
 let totalBalance = document.getElementById("total-balance");
 let totalIncome = document.getElementById("total-income");
 let totalExpense = document.getElementById("total-expenses");
@@ -58,6 +59,7 @@ dashboardBtn.addEventListener("click", () => showSection("dashboard"));
 transactionsBtn.addEventListener("click", () => showSection("transaction-section"));
 statisticsBtn.addEventListener("click", () => showSection("statistics"));
 createChart(
+  ctx,
   housingTotal, foodTotal, transportationTotal, entertainmentTotal,
   utilitiesTotal, insuranceTotal, financialObligationTotal,
   medicalTotal, businessTotal, othersTotal
@@ -86,71 +88,6 @@ let filtered = [];
 let balance = 0;
 let income = 0;
 let expense = 0;
-
-function createChart(housing, food, transportation, entertainment, utilities, insurance, financial_obligation, medical, business,others) {
-  if (mychart) {
-    mychart.destroy();
-  }
-  mychart = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels: ["Housing", "Food", "Transportation", "Entertainment", "Utilities", "Insurance", "Financial Obligation", "Medical", "Business", "Others"],
-      datasets: [{
-        label: "Expenses",
-        data: [housing, food, transportation, entertainment, utilities, insurance, financial_obligation, medical, business, others],
-        backgroundColor: [
-          "rgba(78, 121, 167, 0.2)",
-          "rgba(242, 142, 43, 0.2)",
-          "rgba(225, 87, 89, 0.2)",
-          "rgba(118, 183, 178, 0.2)",
-          "rgba(89, 161, 79, 0.2)",
-          "rgba(237, 201, 72, 0.2)",
-          "rgba(176, 122, 161, 0.2)",
-          "rgba(255, 157, 167, 0.2)",
-          "rgba(156, 117, 95, 0.2)",
-          "rgba(186, 176, 172, 0.2)"
-        ],
-        borderColor: [
-          "rgba(78, 121, 167, 1)",
-          "rgba(242, 142, 43, 1)",
-          "rgba(225, 87, 89, 1)",
-          "rgba(118, 183, 178, 1)",
-          "rgba(89, 161, 79, 1)",
-          "rgba(237, 201, 72, 1)",
-          "rgba(176, 122, 161, 1)",
-          "rgba(255, 157, 167, 1)",
-          "rgba(156, 117, 95, 1)",
-          "rgba(186, 176, 172, 1)"
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      layout: { padding: { right: 32, left: 16, top: 16, bottom: 16 } },
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'right', labels: { padding: 24 } },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const label = context.label || '';
-              const value = context.parsed || 0;
-              return `${label}: ${value.toLocaleString('en-US')} $`;
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-function showSection(section) {
-    document.querySelectorAll("#section > div").forEach(sec => {
-        sec.style.display = "none"
-    })
-    document.querySelector(`.${section}`).style.display = "block"
-}
 
 showSection("dashboard")
 
@@ -196,19 +133,15 @@ addExpenseBtn.addEventListener("click", () => {
     renderTransactions([...transactions].reverse(), transactionList)
     renderTransactions([...transactions].reverse().slice(0, 5), recentTransactions)
     getTotalsByCategory()
-    createChart(housingTotal, foodTotal, transportationTotal, entertainmentTotal, utilitiesTotal, insuranceTotal, financialObligationTotal, medicalTotal, businessTotal, othersTotal)
+    createChart(
+      ctx,
+      housingTotal, foodTotal, transportationTotal, entertainmentTotal,
+      utilitiesTotal, insuranceTotal, financialObligationTotal,
+      medicalTotal, businessTotal, othersTotal
+    )
     transactionSelect.value = "latest"
 })
 
-// Block non-numeric input in amount fields
-function blockNonNumericInput(e) {
-  // Allow: digits, backspace, delete, arrows, tab, period, minus
-  if (!e.ctrlKey && !e.metaKey &&
-    !["Backspace","Delete","ArrowLeft","ArrowRight","Tab"].includes(e.key) &&
-    !e.key.match(/^[0-9.-]$/)) {
-    e.preventDefault();
-  }
-}
 function updateTotals() {
   subTotalBalance.textContent = `Balance: $${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   totalBalance.textContent = `Total Balance: $${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -233,7 +166,7 @@ function renderTransactions(list, transaction) {
       const minutes = String(transaction.date.getMinutes()).padStart(2, '0');
       const date = transaction.date.toLocaleDateString()
       const time = hours + ":" + minutes + " " + ampm;
-      description = transaction.description || ""
+      const description = transaction.description || ""
       templateTransactions += `
         <li class="list-item">
           <div class="list-top">
@@ -282,7 +215,7 @@ function getTotalsByCategory() {
       case "insurance":
         insuranceTotal += amount;
         break;
-      case "financial obligation":
+      case "financial obligations":
         financialObligationTotal += amount;
         break;
       case "medical":
@@ -291,7 +224,7 @@ function getTotalsByCategory() {
       case "business":
         businessTotal += amount;
         break;
-      case "others":
+      case "other":
         othersTotal += amount;
         break;
     }
@@ -350,6 +283,7 @@ function getDailySummary() {
     return amount;
   }, 0);
   const netProfit = dailyEarning - dailyExpenses;
+  let net = `Net Profit: $${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (netProfit > 0) {
     net = `Net Profit: + $${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}▴`;
   } else if (netProfit < 0) {
@@ -375,10 +309,11 @@ function getWeeklySummary(date) {
       } else if (transaction.type === "Expense") {
         amount.expenses += transaction.amount;
       }
-      return amount
-    } 
+    }
+    return amount
   }, {income: 0, expenses: 0})
   const netProfit = income - expenses;
+  let net = `Net Profit: $${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (netProfit > 0) {
     net = `Net Profit: + $${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}▴`;
   } else if (netProfit < 0) {
@@ -402,10 +337,11 @@ function getMonthlySummary() {
       } else if (transaction.type === "Expense") {
         amount.expenses += transaction.amount;
       }
-      return amount
     }
+    return amount
   }, {income: 0, expenses: 0})
   const netProfit = income - expenses;
+  let net = `Net Profit: $${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (netProfit > 0) {
     net = `Net Profit: + $${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}▴`;
   } else if (netProfit < 0) {
@@ -414,73 +350,6 @@ function getMonthlySummary() {
   monthlyEarnings.textContent = `Monthly Earnings: $${income.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   monthlySpending.textContent = `Monthly Spending: $${expenses.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   monthlyNetProfit.textContent = net;
-}
-
-function createIncomeVsExpensesChart(firstMonth, secondMonth, thirdMonth, fourthMonth, fifthMonth ,currentMonth) {
-  if (chart) {
-    chart.destroy();
-  }
-
-  chart = new Chart(lineCtx, {
-    type: "line",
-    data: {
-      labels: [firstMonth.date.label, secondMonth.date.label, thirdMonth.date.label, fourthMonth.date.label, fifthMonth.date.label, currentMonth.date.label],
-      datasets: [{
-          label: "Income",
-          data: [firstMonth.income, secondMonth.income, thirdMonth.income, fourthMonth.income, fifthMonth.income, currentMonth.income],
-          borderColor: "green",
-          fill: false,
-          tension: 0.2, // smooth curve
-      },
-      {
-        label: "Expenses",
-        data: [firstMonth.expenses, secondMonth.expenses, thirdMonth.expenses, fourthMonth.expenses, fifthMonth.expenses, currentMonth.expenses],
-        borderColor: "red",
-        fill: false,
-        tension: 0.2,
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-    },
-    scales: {
-      y: { beginAtZero: true , suggestedMax: Math.max(...[firstMonth.income, secondMonth.income, thirdMonth.income, fourthMonth.income, fifthMonth.income, currentMonth.income]) * 1.25}
-
-    }
-  }
-});
-}
-
-function incomeTrendChart(firstMonth, secondMonth, thirdMonth, fourthMonth, fifthMonth ,currentMonth) {
-    if (trendChart) {
-    trendChart.destroy();
-  }
-
-  trendChart = new Chart(trendCtx, {
-    type: "line",
-    data: {
-      labels: [firstMonth.date.label, secondMonth.date.label, thirdMonth.date.label, fourthMonth.date.label, fifthMonth.date.label, currentMonth.date.label],
-      datasets: [{
-          label: "Profit",
-          data: [firstMonth.profit, secondMonth.profit, thirdMonth.profit, fourthMonth.profit, fifthMonth.profit, currentMonth.profit],
-          borderColor: "green",
-          fill: false,
-          tension: 0.2, // smooth curve
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-    },
-    scales: {
-      y: { beginAtZero: true , suggestedMax: Math.max(...[firstMonth.income, secondMonth.income, thirdMonth.income, fourthMonth.income, fifthMonth.income, currentMonth.income]) * 1}
-
-    }
-  }
-});
 }
 
 function getLast6Months() {
@@ -515,7 +384,7 @@ function calculateLast6MonthsData() {
       }
       return amount
     }, {income: 0, expenses: 0})
-    profit = income - expenses;
+    const profit = income - expenses;
     monthsData.push({date: months[i], income: income, expenses: expenses, profit: profit});
   }
   return monthsData;
@@ -524,8 +393,8 @@ function calculateLast6MonthsData() {
 function getDataForLast6Months() {
   const monthsData = calculateLast6MonthsData();
   const [firstMonth, secondMonth, thirdMonth, fourthMonth, fifthMonth, currentMonth] = monthsData;
-  createIncomeVsExpensesChart(firstMonth, secondMonth, thirdMonth, fourthMonth, fifthMonth, currentMonth);
-  incomeTrendChart(firstMonth, secondMonth, thirdMonth, fourthMonth, fifthMonth, currentMonth);
+  createIncomeVsExpensesChart(lineCtx, firstMonth, secondMonth, thirdMonth, fourthMonth, fifthMonth, currentMonth);
+  incomeTrendChart(trendCtx, firstMonth, secondMonth, thirdMonth, fourthMonth, fifthMonth, currentMonth);
 }
 
 statisticsBtn.addEventListener("click", getDailySummary);

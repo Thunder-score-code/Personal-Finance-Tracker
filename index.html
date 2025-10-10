@@ -129,6 +129,12 @@
             </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-        <script src="Js/index.js"></script>
+        <script>
+            // Check if Chart.js loaded
+            if (typeof Chart === 'undefined') {
+                document.body.innerHTML = '<div style="padding:20px;background:#ffe6e6;margin:20px;border:1px solid red;"><h2>Chart.js failed to load</h2><p>Please check your internet connection or CDN availability.</p></div>';
+            }
+        </script>
+        <script type="module" src="Js/index.js"></script>
     </body>
 </html> 
