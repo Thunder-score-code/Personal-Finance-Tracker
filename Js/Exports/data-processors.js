@@ -1,5 +1,3 @@
-let amount = 0
-
 export function filterTransactions(filter, filtered, transactions, transactionList, renderTransactions) {
   filtered = [...transactions];
   if (filter === "latest") {
@@ -42,7 +40,7 @@ export function getTotalsByCategory(transactions) {
     let othersTotal = 0;
   transactions.forEach(transaction => {
     if(transaction.type === "Expense") {
-      amount = transaction.amount;
+      const amount = transaction.amount;
       switch (transaction.category) {
       case "housing":
         housingTotal += amount;
