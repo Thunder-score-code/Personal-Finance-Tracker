@@ -2,6 +2,7 @@ import { showSection, blockNonNumericInput } from './Exports/background-runners.
 import { createChart, createIncomeVsExpensesChart, incomeTrendChart } from './Exports/create-charts.js';
 import { updateTotals, renderTransactions, getDailySummary, getWeeklySummary, getMonthlySummary } from './Exports/ui-updaters.js';
 import { filterTransactions, getTotalsByCategory, getDataForLast6Months } from './Exports/data-processors.js';
+import { handleAddIncome, handleAddExpense } from './Exports/transaction-handlers.js';
 
 const dashboardBtn = document.getElementById("dashboard-btn");
 const transactionsBtn = document.getElementById("transactions-btn");
@@ -36,10 +37,59 @@ let medicalTotal = 0;
 let businessTotal = 0;
 let othersTotal = 0;
 
+let transactions = [];
+let filtered = [];
+let balance = 0;
+let income = 0;
+let expense = 0;
+
+if (localStorage.getItem("transactions")) {
+    transactions = JSON.parse(localStorage.getItem("transactions"));
+    // Convert date strings back to Date objects
+    transactions.forEach(t => {
+        t.date = new Date(t.date);
+    });
+    // Calculate totals from loaded transactions
+    transactions.forEach(t => {
+        if(t.type === "Income") {
+            income += t.amount;
+            balance += t.amount;
+        } else if(t.type === "Expense") {
+            expense += t.amount;
+            balance -= t.amount;
+        }
+    });
+    
+    // Calculate category totals and create chart for loaded data
+    const totals = getTotalsByCategory(transactions);
+    createChart(
+        ctx,
+        totals.housingTotal, 
+        totals.foodTotal, 
+        totals.transportationTotal, 
+        totals.entertainmentTotal,
+        totals.utilitiesTotal, 
+        totals.insuranceTotal, 
+        totals.financialObligationTotal,
+        totals.medicalTotal, 
+        totals.businessTotal, 
+        totals.othersTotal
+    );
+    
+    // Update UI with loaded data
+    updateTotals(balance, income, expense);
+    renderTransactions([...transactions].reverse(), transactionList);
+    renderTransactions([...transactions].reverse().slice(0,5), recentTransactions);
+}
+
 dashboardBtn.addEventListener("click", () => showSection("dashboard"));
 transactionsBtn.addEventListener("click", () => showSection("transaction-section"));
 statisticsBtn.addEventListener("click", () => showSection("statistics"));
-createChart(ctx, housingTotal, foodTotal, transportationTotal, entertainmentTotal, utilitiesTotal, insuranceTotal, financialObligationTotal, medicalTotal, businessTotal, othersTotal);
+
+// Only create initial chart if no data is loaded from localStorage
+if (!localStorage.getItem("transactions")) {
+    createChart(ctx, housingTotal, foodTotal, transportationTotal, entertainmentTotal, utilitiesTotal, insuranceTotal, financialObligationTotal, medicalTotal, businessTotal, othersTotal);
+}
 
 incomeAmountInput.addEventListener("keydown", blockNonNumericInput);
 incomeAmountInput.addEventListener('input', function (e) {
@@ -59,74 +109,50 @@ transactionSelect.addEventListener("change", () => {
   filterTransactions(filter, filtered, transactions, transactionList, renderTransactions);
 });
 
-const transactions = [];
-let filtered = [];
-let balance = 0;
-let income = 0;
-let expense = 0;
-
 showSection("dashboard")
 
 addIncomeBtn.addEventListener("click", () => {
-    if (incomeAmountInput.value < 0) {
-        alert("Please enter a positive number.");
-        return;
-    }
-    const addIncome = Number(incomeAmountInput.value) || 0
-    const description = incomeDescriptionInput.value || ""
-    const category = incomeCategory.value || ""
-    transactions.push({type: "Income", amount: addIncome, description: description, category: category, date: new Date()})
-    income += addIncome
-    balance += addIncome
-    incomeAmountInput.value = ""
-    incomeDescriptionInput.value = ""
-    incomeCategory.value = "salary"
-    updateTotals(balance, income, expense)
-    renderTransactions([...transactions].reverse(), transactionList)
-    renderTransactions([...transactions].reverse().slice(0,5), recentTransactions)
-    transactionSelect.value = "latest"
-})
+    const result = handleAddIncome(
+        transactions,
+        income,
+        balance,
+        expense,
+        incomeAmountInput,
+        incomeDescriptionInput,
+        incomeCategory,
+        transactionList,
+        recentTransactions,
+        transactionSelect,
+        updateTotals,
+        renderTransactions
+    );
+    income = result.income;
+    balance = result.balance;
+    expense = result.expense;
+});
 
 addExpenseBtn.addEventListener("click", () => {
-      if (expenseAmountInput.value <= 0) {
-        alert("Please enter a positive number.");
-        return;
-    }
-      if (Number(expenseAmountInput.value) > balance) {
-        alert("Expense exceeds current balance.");
-        return;
-    }
-    const addExpense = Number(expenseAmountInput.value) || 0
-    const description = expenseDescriptionInput.value || ""
-    const category = expenseCategory.value || ""
-    transactions.push({type: "Expense", amount: addExpense, description: description, category: category, date: new Date()})
-    expense += addExpense
-    balance -= addExpense
-    expenseAmountInput.value = ""
-    expenseDescriptionInput.value = ""
-    expenseCategory.value = "housing"
-    updateTotals(balance, income, expense)
-    renderTransactions([...transactions].reverse(), transactionList)
-    renderTransactions([...transactions].reverse().slice(0, 5), recentTransactions)
-    const totals = getTotalsByCategory(transactions);
-    housingTotal = totals.housingTotal;
-    foodTotal = totals.foodTotal;
-    transportationTotal = totals.transportationTotal;
-    entertainmentTotal = totals.entertainmentTotal;
-    utilitiesTotal = totals.utilitiesTotal;
-    insuranceTotal = totals.insuranceTotal;
-    financialObligationTotal = totals.financialObligationTotal;
-    medicalTotal = totals.medicalTotal;
-    businessTotal = totals.businessTotal;
-    othersTotal = totals.othersTotal;
-    createChart(
-      ctx,
-      housingTotal, foodTotal, transportationTotal, entertainmentTotal,
-      utilitiesTotal, insuranceTotal, financialObligationTotal,
-      medicalTotal, businessTotal, othersTotal
-    )
-    transactionSelect.value = "latest"
-})
+    const result = handleAddExpense(
+        transactions,
+        income,
+        balance,
+        expense,
+        expenseAmountInput,
+        expenseDescriptionInput,
+        expenseCategory,
+        transactionList,
+        recentTransactions,
+        transactionSelect,
+        updateTotals,
+        renderTransactions,
+        getTotalsByCategory,
+        createChart,
+        ctx
+    );
+    income = result.income;
+    balance = result.balance;
+    expense = result.expense;
+});
 
 statisticsBtn.addEventListener("click", () => getDailySummary(transactions));
 statisticsBtn.addEventListener("click", () => getWeeklySummary(new Date(), transactions));
