@@ -56,26 +56,48 @@ export function renderTransactions(list, transaction) {
 }
 
 export function getDailySummary(transactions) {
+  console.log('getDailySummary called with:', transactions.length, 'transactions');
+  console.log('DOM elements found:', {
+    dailyEarnings: !!dailyEarnings,
+    dailySpending: !!dailySpending,
+    dailyNetProfit: !!dailyNetProfit
+  });
+  
+  const today = new Date();
+  const todayString = today.toDateString(); // More reliable date comparison
+  console.log('Today is:', todayString);
+  
   const dailyEarning = transactions.reduce((amount, transaction) => {
-    const transactionDate = transaction.date.toLocaleDateString();
-    const date = new Date().toLocaleDateString();
-    if (transactionDate === date) {
+    // Ensure transaction.date is a Date object
+    const transactionDate = new Date(transaction.date);
+    const transactionDateString = transactionDate.toDateString();
+    console.log('Checking transaction:', transactionDateString, 'vs', todayString, '=', transactionDateString === todayString);
+    
+    if (transactionDateString === todayString) {
       if (transaction.type === "Income") {
+        console.log('Adding income:', transaction.amount);
         return amount + transaction.amount;
       }
     }
     return amount;
   }, 0);
+  
   const dailyExpenses = transactions.reduce((amount, transaction) => {
-    const transactionDate = transaction.date.toLocaleDateString();
-    const date = new Date().toLocaleDateString();
-    if (transactionDate === date) {
+    // Ensure transaction.date is a Date object
+    const transactionDate = new Date(transaction.date);
+    const transactionDateString = transactionDate.toDateString();
+    
+    if (transactionDateString === todayString) {
       if (transaction.type === "Expense") {
+        console.log('Adding expense:', transaction.amount);
         return amount + transaction.amount;
       }
     }
     return amount;
   }, 0);
+  
+  console.log('Daily totals:', { dailyEarning, dailyExpenses });
+  
   const netProfit = dailyEarning - dailyExpenses;
   let net = `Net Profit: $${netProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   if (netProfit > 0) {
@@ -83,9 +105,18 @@ export function getDailySummary(transactions) {
   } else if (netProfit < 0) {
     net = `Net Profit: - $${Math.abs(netProfit).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}▾`;
   }
-  dailyEarnings.textContent = `Daily Earnings: $${dailyEarning.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  dailySpending.textContent = `Daily Spending: $${dailyExpenses.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  dailyNetProfit.textContent = net;
+  
+  if (dailyEarnings) {
+    dailyEarnings.textContent = `Daily Earnings: $${dailyEarning.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+  if (dailySpending) {
+    dailySpending.textContent = `Daily Spending: $${dailyExpenses.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  }
+  if (dailyNetProfit) {
+    dailyNetProfit.textContent = net;
+  }
+  
+  console.log('Daily summary updated');
 }
 
 export function getWeeklySummary(date, transactions) {

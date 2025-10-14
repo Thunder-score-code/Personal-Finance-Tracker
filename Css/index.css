@@ -447,7 +447,7 @@ select {
     display: flex;
     justify-content: space-evenly;
     margin-top: 50px;
-    gap: 75px;
+    gap: 50px;
 }
 
 #charts-statistics > div > h2 {
@@ -463,8 +463,135 @@ select {
 }
 
 /* Responsive adjustments */
+@media (max-width: 1370px) {
+  /* Dashboard - slightly smaller summary boxes */
+  #summary { gap: 120px; }
+  #balance, #recent-transactions {
+    padding: 65px 130px;
+  }
+  
+  /* Transaction page - bigger */
+  .transactions { gap: 140px; }
+  #add-transaction > div {
+    padding: 60px 115px;
+    margin-left: 110px;
+    width: 260px;
+    height: 560px;
+  }
+  
+  #transaction-history {
+    padding: 60px 115px;
+    width: 260px;
+    height: 560px;
+  }
+  
+  /* Make transaction items less wide */
+  #transaction-list {
+    width: 380px;
+  }
+  
+  /* Stats page - bigger summary boxes, smaller charts */
+  #profit > div {
+    width: 250px;
+    height: 250px;
+    padding: 15px;
+  }
+  
+  /* Slightly smaller margins for text in stats boxes */
+  #profit > div > h3 {
+    font-size: 16px;
+    margin: 40px 0;
+  }
+  
+  #profit > div > p {
+    margin: 6px 0;
+    line-height: 1.4;
+  }
+  
+  #charts {
+    width: 900px;
+    min-height: 900px;
+    padding: 15px;
+  }
+}
+
 @media (max-width: 1200px) {
   #charts { width: 100%; min-height: 600px; padding: 24px; }
+}
+
+/* iPad-specific adjustments (11-13 inch screens) */
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  /* Dashboard - slight reduction */
+  #summary { gap: 100px; }
+  #balance, #recent-transactions {
+    padding: 60px 120px;
+  }
+  
+  /* Transaction page - huge reduction */
+  .transactions { gap: 30px; }
+  #add-transaction > div {
+    padding: 8px 15px;
+    margin-left: 30px;
+  }
+  
+  #transaction-history {
+    padding: 8px 15px;
+    width: 80px;
+    height: 300px;
+  }
+  
+  #transaction-list {
+    width: 300px;
+  }
+  
+  /* Stats page - moderate reduction */
+  #profit > div {
+    width: 180px;
+    height: 180px;
+  }
+  
+  #charts {
+    width: 750px;
+    min-height: 750px;
+    padding: 20px;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 834px) and (orientation: portrait) {
+  /* Dashboard - slight reduction */
+  #summary { gap: 80px; }
+  #balance, #recent-transactions {
+    padding: 50px 100px;
+  }
+  
+  /* Transaction page - huge reduction */
+  .transactions { gap: 25px; }
+  #add-transaction > div {
+    padding: 6px 12px;
+    margin-left: 20px;
+  }
+  
+  #transaction-history {
+    padding: 6px 12px;
+    width: 60px;
+    height: 250px;
+  }
+  
+  #transaction-list {
+    width: 250px;
+  }
+  
+  /* Stats page - moderate reduction */
+  #profit > div {
+    width: 160px;
+    height: 160px;
+  }
+  
+  #charts {
+    width: 600px;
+    min-height: 600px;
+    padding: 16px;
+  }
 }
 
 @media (max-width: 992px) {
