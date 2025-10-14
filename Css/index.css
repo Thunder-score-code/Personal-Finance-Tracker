@@ -193,8 +193,8 @@ nav {
 }
 
 #charts {
-  width: 1210px;                /* or use max-width: 100% for responsiveness */
-  min-height: 1210px;
+  width: 900px;                /* reduced from 1210px for better media query control */
+  min-height: 900px;
   margin: 40px auto;           /* center horizontally, add top margin */
   background: #fff;            /* white background for contrast */
   border-radius: 16px;         /* rounded corners */
@@ -464,54 +464,54 @@ select {
 
 /* Responsive adjustments */
 @media (max-width: 1370px) {
-  /* Dashboard - slightly smaller summary boxes */
-  #summary { gap: 120px; }
+  /* Dashboard - smaller summary boxes */
+  #summary { gap: 80px; }
   #balance, #recent-transactions {
-    padding: 65px 130px;
+    padding: 45px 90px;
   }
   
-  /* Transaction page - bigger */
-  .transactions { gap: 140px; }
+  /* Transaction page - smaller */
+  .transactions { gap: 120px; }
   #add-transaction > div {
-    padding: 60px 115px;
-    margin-left: 110px;
-    width: 260px;
-    height: 560px;
+    padding: 50px 95px;
+    margin-left: 100px;
+    width: 240px;
+    height: 520px;
   }
   
   #transaction-history {
-    padding: 60px 115px;
-    width: 260px;
-    height: 560px;
+    padding: 50px 95px;
+    width: 240px;
+    height: 520px;
   }
   
   /* Make transaction items less wide */
   #transaction-list {
-    width: 380px;
+    width: 360px;
   }
   
-  /* Stats page - bigger summary boxes, smaller charts */
+  /* Stats page - smaller summary boxes, smaller charts */
   #profit > div {
-    width: 250px;
-    height: 250px;
-    padding: 15px;
+    width: 230px;
+    height: 230px;
+    padding: 12px;
   }
   
   /* Slightly smaller margins for text in stats boxes */
   #profit > div > h3 {
-    font-size: 16px;
-    margin: 40px 0;
+    font-size: 15px;
+    margin: 35px 0;
   }
   
   #profit > div > p {
-    margin: 6px 0;
-    line-height: 1.4;
+    margin: 5px 0;
+    line-height: 1.3;
   }
   
   #charts {
-    width: 900px;
-    min-height: 900px;
-    padding: 15px;
+    width: 650px;
+    min-height: 650px;
+    padding: 8px;
   }
 }
 
