@@ -484,6 +484,10 @@ select {
     width: 350px;
     height: 520px;
   }
+
+  .transaction-section h5{
+    transform: translateX(-120px);
+  }
   
   /* Make transaction items less wide */
   #transaction-list {
