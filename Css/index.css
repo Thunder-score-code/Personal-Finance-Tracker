@@ -479,14 +479,15 @@ select {
     height: 520px;
   }
   
+  /* Move the balance text in transactions section */
+  .balance {
+    margin-left: 250px !important;
+  }
+
   #transaction-history {
     padding: 50px 95px;
     width: 350px;
     height: 520px;
-  }
-
-  .transaction-section h5{
-    transform: translateX(-120px);
   }
   
   /* Make transaction items less wide */
