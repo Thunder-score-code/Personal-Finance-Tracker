@@ -562,11 +562,15 @@ select {
     cursor: pointer;
     transition: background-color 0.3s;
     line-height: 0.95;
-    transform: translateY(8px);
 }
 
 #set-balance-button:hover {
     background-color: #0284c7;
+}
+
+#set-balance-inputs {
+    display: flex;
+    gap: 3px;
 }
 
 /* Responsive adjustments */
