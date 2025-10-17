@@ -3,6 +3,7 @@ import { createChart, createIncomeVsExpensesChart, incomeTrendChart } from './Ex
 import { updateTotals, renderTransactions, getDailySummary, getWeeklySummary, getMonthlySummary } from './Exports/ui-updaters.js';
 import { filterTransactions, getTotalsByCategory, getDataForLast6Months } from './Exports/data-processors.js';
 import { handleAddIncome, handleAddExpense } from './Exports/transaction-handlers.js';
+import { resetWebsite, setBalance } from './Exports/setting.js';
 
 const dashboardBtn = document.getElementById("dashboard-btn");
 const transactionsBtn = document.getElementById("transactions-btn");
@@ -25,6 +26,11 @@ const expenseCategory = document.getElementById("expense-category");
 const transactionList = document.getElementById("transaction-list");
 const transactionSelect = document.getElementById("transaction-filter");
 const recentTransactions = document.getElementById("recent-transactions-list");
+
+const settingButton = document.getElementById("settings-btn");
+const resetWebsiteButton = document.getElementById("reset-website-button");
+const setBalanceButton = document.getElementById("set-balance-button");
+const setBalanceInput = document.getElementById("balance-input");
 
 let housingTotal = 0;
 let foodTotal = 0;
@@ -85,6 +91,7 @@ if (localStorage.getItem("transactions")) {
 dashboardBtn.addEventListener("click", () => showSection("dashboard"));
 transactionsBtn.addEventListener("click", () => showSection("transaction-section"));
 statisticsBtn.addEventListener("click", () => showSection("statistics"));
+settingButton.addEventListener("click", () => showSection("settings"))
 
 // Only create initial chart if no data is loaded from localStorage
 if (!localStorage.getItem("transactions")) {
@@ -99,6 +106,13 @@ incomeAmountInput.addEventListener('input', function (e) {
 });
 expenseAmountInput.addEventListener("keydown", blockNonNumericInput);
 expenseAmountInput.addEventListener('input', function (e) {
+    if (e.target.value.length > 7) {
+        e.target.value = e.target.value.slice(0, 7);
+    }
+});
+
+setBalanceInput.addEventListener("keydown", blockNonNumericInput);
+setBalanceInput.addEventListener('input', function (e) {
     if (e.target.value.length > 7) {
         e.target.value = e.target.value.slice(0, 7);
     }
@@ -154,7 +168,11 @@ addExpenseBtn.addEventListener("click", () => {
     expense = result.expense;
 });
 
+
 statisticsBtn.addEventListener("click", () => getDailySummary(transactions));
 statisticsBtn.addEventListener("click", () => getWeeklySummary(new Date(), transactions));
 statisticsBtn.addEventListener("click", () => getMonthlySummary(transactions));
 statisticsBtn.addEventListener("click", () => getDataForLast6Months(transactions, createIncomeVsExpensesChart, lineCtx, incomeTrendChart, trendCtx));
+
+resetWebsiteButton.addEventListener("click", resetWebsite);
+setBalanceButton.addEventListener("click", setBalance);

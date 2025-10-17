@@ -11,6 +11,7 @@
             <button id="dashboard-btn" class="nav-btn" data-section="dashboard">Dashboard</button>
             <button id="transactions-btn" class="nav-btn" data-section="transactions">Transactions</button>
             <button id="statistics-btn" class="nav-btn" data-section="statistics">Statistics</button>
+            <button id="settings-btn" class="settings-btn" data-section="settings">⚙️</button>
         </nav>
         <div id="section">
             <div class="dashboard">
@@ -125,6 +126,22 @@
 
                         </canvas>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="settings">
+            <h1 id="settings-title">Settings</h1>
+            <div id="settings-options">
+                <div id="reset">
+                    <h3>Reset Website</h3>
+                    <button id="reset-website-button">Reset</button>
+                    <p><small>This will clear all your data and reset the website to its default state.</small></p>
+                </div>
+                <div id="set-balance">
+                    <h3>Set Balance</h3>
+                    <input type="number" id="balance-input" placeholder="Enter new balance">
+                    <button id="set-balance-button">Set Balance</button>
+                    <p><small>This will update your current balance but it will not affect your data</small></p>
                 </div>
             </div>
         </div>

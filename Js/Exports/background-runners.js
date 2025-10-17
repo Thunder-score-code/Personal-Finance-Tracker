@@ -1,7 +1,15 @@
 export function showSection(section) {
+    // Hide all sections inside #section
     document.querySelectorAll("#section > div").forEach(sec => {
         sec.style.display = "none"
     })
+    // Also hide the settings section which is outside #section
+    const settingsSection = document.querySelector(".settings");
+    if (settingsSection) {
+        settingsSection.style.display = "none";
+    }
+    
+    // Show the requested section
     document.querySelector(`.${section}`).style.display = "block"
 }
 
